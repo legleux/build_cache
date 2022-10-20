@@ -32,7 +32,7 @@ jobs:
         ls -l
         cd boost
         ls -lah
-        ./bootstrap
+        ./bootstrap.sh
         ./b2
 
     - name: check boost
