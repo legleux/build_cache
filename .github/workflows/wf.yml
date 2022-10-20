@@ -12,16 +12,25 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Cache Primes
-      id: cache-primes
+    - name: get boost
+      run: |
+        curl -s -OJL "https://boostorg.jfrog.io/artifactory/main/release/1.77.0/source/boost_1_77_0.tar.gz"
+        tar zxvf boost_1_77_0.tar.gz
+        ln -s boost_1_77_0 boost
+
+    - name: Cache boost build
+      id: boost
       uses: actions/cache@v3
       with:
-        path: prime-numbers
+        path: boost
         key: ${{ runner.os }}-primes
 
-    - name: Generate Prime Numbers
-      if: steps.cache-primes.outputs.cache-hit != 'true'
-      run: /generate-primes.sh -d prime-numbers
+    - name: build boost
+      if: steps.boost.outputs.cache-hit != 'true'
+      run: |
+        cd boost
+        ./bootstrap
+        ./b2
 
-    - name: Use Prime Numbers
-      run: /primes.sh -d prime-numbers
+    - name: check boost
+      run: ls -lah boost
