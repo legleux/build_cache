@@ -17,7 +17,8 @@ jobs:
       run: |
         curl -s -OJL "https://boostorg.jfrog.io/artifactory/main/release/1.77.0/source/boost_1_77_0.tar.gz"
         tar zxf boost_1_77_0.tar.gz
-        ln -s boost_1_77_0 boost
+        # ln -s boost_1_77_0 boost
+        mv boost_1_77_0 boost
 
     - name: Cache boost build
       id: boost
@@ -34,8 +35,10 @@ jobs:
         ./b2
 
     - name: check boost
-      run: ls -lah boost
-
+      run: |
+        ls -lah boost
+        cd boost
+        ls -lh
     - name: install deps
       run: |
         if [[ ${{ matrix.os }} =~ mac ]];then
