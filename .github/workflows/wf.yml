@@ -29,10 +29,7 @@ jobs:
     - name: build boost
       if: steps.boost.outputs.cache-hit != 'true'
       run: |
-        ls -l
         cd boost
-        ls -lah
-        realpath .
         ./bootstrap.sh
         ./b2
 
@@ -53,6 +50,7 @@ jobs:
         ls -l
         ls -l boost
         export BOOST_ROOT=$(pwd)/boost/boost
+        ls -lah $BOOST_ROOT
         cd clio
         cmake -B build
         cmake --build build -j$(nproc)
