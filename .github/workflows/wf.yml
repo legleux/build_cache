@@ -24,7 +24,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: boost
-        key: ${{ runner.os }}-primes
+        key: ${{ runner.os }}-boost
 
     - name: build boost
       if: steps.boost.outputs.cache-hit != 'true'
@@ -37,3 +37,18 @@ jobs:
 
     - name: check boost
       run: ls -lah boost
+
+    - name: install deps
+      run: |
+        if [[ ${{ matrix.os }} =~ mac ]];then
+          echo "do mac stuff"
+        elif [[ ${{matrix.os }} =~ ubuntu ]];
+          echo "do ubu stuff"
+        fi
+
+    - name: Build clio
+      run: |
+        BOOST_ROOT=boost
+        cd clio
+        cmake -B build
+        cmake --build build -j$(nproc)

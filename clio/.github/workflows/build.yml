@@ -1,0 +1,88 @@
+name: Build Clio
+on:
+  push:
+    branches:  [master, release, develop, develop-next]
+  pull_request:
+    branches:  [master, release, develop, develop-next]
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run clang-format
+        uses: ./.github/actions/lint
+
+  build_clio:
+    name: Build Clio
+    runs-on: [self-hosted, Linux]
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        type:
+          - suffix: deb
+            image: rippleci/clio-dpkg-builder:2022-09-17
+            script: dpkg
+          - suffix: rpm
+            image: rippleci/clio-rpm-builder:2022-09-17
+            script: rpm
+    container:
+      image: ${{ matrix.type.image }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: clio
+
+      - name: Clone Clio packaging repo
+        uses: actions/checkout@v3
+        with:
+          path: clio-packages
+          repository: XRPLF/clio-packages
+
+      - name: Build
+        shell: bash
+        run: |
+          export CLIO_ROOT=$(realpath clio)
+          if [ ${{ matrix.type.suffix }} == "rpm" ]; then
+            source /opt/rh/devtoolset-11/enable
+          fi
+          cmake -S clio-packages -B clio-packages/build -DCLIO_ROOT=$CLIO_ROOT
+          cmake --build clio-packages/build --parallel $(nproc)
+          cp ./clio-packages/build/clio-prefix/src/clio-build/clio_tests .
+          mv ./clio-packages/build/*.${{ matrix.type.suffix }} .
+
+      - name: Artifact packages
+        uses: actions/upload-artifact@v3
+        with:
+          name: clio_${{ matrix.type.suffix }}_packages
+          path: ${{ github.workspace }}/*.${{ matrix.type.suffix }}
+
+      - name: Artifact clio_tests
+        uses: actions/upload-artifact@v3
+        with:
+          name: clio_tests-${{ matrix.type.suffix }}
+          path: ${{ github.workspace }}/clio_tests
+
+  test_clio:
+    name: Test Clio
+    runs-on: [self-hosted, Linux]
+    needs: build_clio
+    strategy:
+      fail-fast: false
+      matrix:
+        suffix: [rpm, deb]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get clio_tests artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: clio_tests-${{ matrix.suffix }}
+
+      - name: Run tests
+        timeout-minutes: 10
+        uses: ./.github/actions/test
