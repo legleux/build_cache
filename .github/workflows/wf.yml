@@ -32,6 +32,7 @@ jobs:
         ls -l
         cd boost
         ls -lah
+        realpath .
         ./bootstrap.sh
         ./b2
 
@@ -51,7 +52,7 @@ jobs:
       run: |
         ls -l
         ls -l boost
-        export BOOST_ROOT=$(pwd)/boost
+        export BOOST_ROOT=$(pwd)/boost/boost
         cd clio
         cmake -B build
         cmake --build build -j$(nproc)
