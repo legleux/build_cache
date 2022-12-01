@@ -1,4 +1,4 @@
-name: Caching Primes
+name: Build Clio
 
 on: push
 
@@ -41,8 +41,9 @@ jobs:
     - name: install deps
       run: |
         if [[ ${{ matrix.os }} =~ mac ]];then
-          echo "do mac stuff"
+            brew install pkg-config protobuf openssl ninja
         elif [[ ${{matrix.os }} =~ ubuntu ]];then
+            sudo apt-get -y install git pkg-config protobuf-compiler libprotobuf-dev libssl-dev wget build-essential doxygen
             sudo apt-get -y install git pkg-config protobuf-compiler libprotobuf-dev libssl-dev wget build-essential bison flex autoconf cmake clang-format
         fi
 
