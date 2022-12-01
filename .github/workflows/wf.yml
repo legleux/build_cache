@@ -49,7 +49,7 @@ jobs:
       run: |
         ls -l
         ls -l boost
-        export BOOST_ROOT=$(pwd)/boost/boost
+        export BOOST_ROOT=$(pwd)/boost
         ls -lah $BOOST_ROOT
         cd clio
         cmake -B build
