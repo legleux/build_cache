@@ -143,32 +143,32 @@ LogService::init(Config const& config)
 }
 
 Logger::Pump
-Logger::trace(source_location_t const loc) const
+Logger::trace(source_location_t const& loc) const
 {
     return {logger_, Severity::TRACE, loc};
 };
 Logger::Pump
-Logger::debug(source_location_t const loc) const
+Logger::debug(source_location_t const& loc) const
 {
     return {logger_, Severity::DEBUG, loc};
 };
 Logger::Pump
-Logger::info(source_location_t const loc) const
+Logger::info(source_location_t const& loc) const
 {
     return {logger_, Severity::INFO, loc};
 };
 Logger::Pump
-Logger::warn(source_location_t const loc) const
+Logger::warn(source_location_t const& loc) const
 {
     return {logger_, Severity::WARNING, loc};
 };
 Logger::Pump
-Logger::error(source_location_t const loc) const
+Logger::error(source_location_t const& loc) const
 {
     return {logger_, Severity::ERROR, loc};
 };
 Logger::Pump
-Logger::fatal(source_location_t const loc) const
+Logger::fatal(source_location_t const& loc) const
 {
     return {logger_, Severity::FATAL, loc};
 };
