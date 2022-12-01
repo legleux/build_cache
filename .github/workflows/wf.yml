@@ -42,8 +42,8 @@ jobs:
       run: |
         if [[ ${{ matrix.os }} =~ mac ]];then
           echo "do mac stuff"
-        elif [[ ${{matrix.os }} =~ ubuntu ]];
-          echo "do ubu stuff"
+        elif [[ ${{matrix.os }} =~ ubuntu ]];then
+            sudo apt-get -y install git pkg-config protobuf-compiler libprotobuf-dev libssl-dev wget build-essential bison flex autoconf cmake clang-format
         fi
 
     - name: Build clio
