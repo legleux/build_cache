@@ -48,7 +48,8 @@ jobs:
 
     - name: Build clio
       run: |
-        BOOST_ROOT=boost
+        ls -l
+        BOOST_ROOT=$(pwd)/boost
         cd clio
         cmake -B build
         cmake --build build -j$(nproc)
